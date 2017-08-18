@@ -128,6 +128,16 @@ class Main extends egret.DisplayObjectContainer {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
         }
     }
+    /**
+     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
+     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
+     */
+    private createBitmapByName(name: string) {
+        let result = new egret.Bitmap();
+        let texture: egret.Texture = RES.getRes(name);
+        result.texture = texture;
+        return result;
+    }
 
     private textfield: egret.TextField;
 
@@ -152,13 +162,44 @@ class Main extends egret.DisplayObjectContainer {
         tx.y = 20; 
         tx.width = this.stage.stageWidth - 40;
         //给tx对象增加一个touch事件
-        tx.touchEnabled = true; 
+        tx.touchEnabled = true;
         //新增一个方法的引用，这就是事件处理函数，我们需要事件处理函数中对用户操作做出对应的反应,用
         // tx.addEventListener( egret.TouchEvent.TOUCH_TAP, this.touchHandler, this );
         tx.addEventListener( egret.TouchEvent.TOUCH_TAP, function( evt:egret.TouchEvent ):void{    
             tx.textColor = 0x00ff00; 
         }, this );
         this.addChild( tx );
+        //加载图片
+        // let sky = this.createBitmapByName("my");
+        // this.addChild(sky);
+        // let stageW = this.stage.stageWidth;
+        // let stageH = this.stage.stageHeight;
+        // sky.width = stageW;
+        // sky.height = stageH;
+
+        let sky = this.createBitmapByName("my_png");
+        this.addChild(sky);
+        let stageW = this.stage.stageWidth;
+        let stageH = this.stage.stageHeight;
+        sky.y = 105;
+        sky.width = stageW;
+        // sky.height = stageH;
+
+        let topMask = new egret.Shape();
+        topMask.graphics.beginFill(0x000000, 0.5);
+        topMask.graphics.drawRect(0, 0, stageW, 172);
+        topMask.graphics.endFill();
+        topMask.y = 33;
+        this.addChild(topMask);
+
+        // let icon = this.createBitmapByName("egret_icon_png");
+        // this.addChild(icon);
+        // icon.x = 26;
+        // icon.y = 33;
+        // var batman:egret.Bitmap = new egret.Bitmap( RES.getRes("assets/.png") );
+        // batman.x = -30;
+        // batman.y = 20;
+        // this.addChild( batman );
     }
 
     // private touchHandler( evt:egret.TouchEvent ):void{

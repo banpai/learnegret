@@ -29,11 +29,16 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
@@ -118,6 +123,16 @@ var Main = (function (_super) {
         }
     };
     /**
+     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
+     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
+     */
+    Main.prototype.createBitmapByName = function (name) {
+        var result = new egret.Bitmap();
+        var texture = RES.getRes(name);
+        result.texture = texture;
+        return result;
+    };
+    /**
      * 创建游戏场景
      * Create a game scene
      */
@@ -144,6 +159,34 @@ var Main = (function (_super) {
             tx.textColor = 0x00ff00;
         }, this);
         this.addChild(tx);
+        //加载图片
+        // let sky = this.createBitmapByName("my");
+        // this.addChild(sky);
+        // let stageW = this.stage.stageWidth;
+        // let stageH = this.stage.stageHeight;
+        // sky.width = stageW;
+        // sky.height = stageH;
+        var sky = this.createBitmapByName("my_png");
+        this.addChild(sky);
+        var stageW = this.stage.stageWidth;
+        var stageH = this.stage.stageHeight;
+        sky.y = 105;
+        sky.width = stageW;
+        // sky.height = stageH;
+        var topMask = new egret.Shape();
+        topMask.graphics.beginFill(0x000000, 0.5);
+        topMask.graphics.drawRect(0, 0, stageW, 172);
+        topMask.graphics.endFill();
+        topMask.y = 33;
+        this.addChild(topMask);
+        // let icon = this.createBitmapByName("egret_icon_png");
+        // this.addChild(icon);
+        // icon.x = 26;
+        // icon.y = 33;
+        // var batman:egret.Bitmap = new egret.Bitmap( RES.getRes("assets/.png") );
+        // batman.x = -30;
+        // batman.y = 20;
+        // this.addChild( batman );
     };
     return Main;
 }(egret.DisplayObjectContainer));
