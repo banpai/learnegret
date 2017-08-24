@@ -105,11 +105,11 @@ declare namespace dragonBones {
         BoneS = 13,
         BoneX = 14,
         BoneY = 15,
-        BoneRotation = 16,
+        BoneRotate = 16,
         BoneSkew = 17,
         BoneScaleX = 18,
         BoneScaleY = 19,
-        SlotDisplayIndex = 20,
+        SlotDisplay = 20,
         SlotColor = 21,
         SlotFFD = 22,
         AnimationTime = 40,
@@ -618,27 +618,27 @@ declare namespace dragonBones {
         /**
          * @private
          */
-        intArray: Array<number> | Int16Array;
+        intArray: Int16Array;
         /**
          * @private
          */
-        floatArray: Array<number> | Float32Array;
+        floatArray: Float32Array;
         /**
          * @private
          */
-        frameIntArray: Array<number> | Int16Array;
+        frameIntArray: Int16Array;
         /**
          * @private
          */
-        frameFloatArray: Array<number> | Float32Array;
+        frameFloatArray: Float32Array;
         /**
          * @private
          */
-        frameArray: Array<number> | Int16Array;
+        frameArray: Int16Array;
         /**
          * @private
          */
-        timelineArray: Array<number> | Uint16Array;
+        timelineArray: Uint16Array;
         /**
          * @private
          */
@@ -1803,7 +1803,7 @@ declare namespace dragonBones {
          */
         userData: any;
         private _debugDraw;
-        private _delayDispose;
+        private _lockUpdate;
         private _bonesDirty;
         private _slotsDirty;
         private _zOrderDirty;
@@ -1816,6 +1816,7 @@ declare namespace dragonBones {
         _cacheFrameIndex: number;
         private readonly _bones;
         private readonly _slots;
+        private readonly _actions;
         private _animation;
         private _proxy;
         private _display;
@@ -1866,6 +1867,11 @@ declare namespace dragonBones {
          * @private
          */
         _removeSlotFromSlotList(value: Slot): void;
+        /**
+         * @internal
+         * @private
+         */
+        _bufferAction(action: ActionData, append: boolean): void;
         /**
          * 释放骨架。 (回收到对象池)
          * @version DragonBones 3.0
@@ -3737,6 +3743,12 @@ declare namespace dragonBones {
         protected static readonly Z_ORDER: string;
         protected static readonly FFD: string;
         protected static readonly FRAME: string;
+        protected static readonly TRANSLATE_FRAME: string;
+        protected static readonly ROTATE_FRAME: string;
+        protected static readonly SCALE_FRAME: string;
+        protected static readonly VISIBLE_FRAME: string;
+        protected static readonly DISPLAY_FRAME: string;
+        protected static readonly COLOR_FRAME: string;
         protected static readonly DEFAULT_ACTIONS: string;
         protected static readonly ACTIONS: string;
         protected static readonly EVENTS: string;
@@ -3786,12 +3798,13 @@ declare namespace dragonBones {
         protected static readonly ACTION: string;
         protected static readonly X: string;
         protected static readonly Y: string;
-        protected static readonly ROTATION: string;
-        protected static readonly SKEW: string;
         protected static readonly SKEW_X: string;
         protected static readonly SKEW_Y: string;
         protected static readonly SCALE_X: string;
         protected static readonly SCALE_Y: string;
+        protected static readonly VALUE: string;
+        protected static readonly ROTATE: string;
+        protected static readonly SKEW: string;
         protected static readonly ALPHA_OFFSET: string;
         protected static readonly RED_OFFSET: string;
         protected static readonly GREEN_OFFSET: string;
@@ -3840,21 +3853,6 @@ declare namespace dragonBones {
      * @private
      */
     class ObjectDataParser extends DataParser {
-        /**
-         * @private
-         */
-        private _intArrayJson;
-        private _floatArrayJson;
-        private _frameIntArrayJson;
-        private _frameFloatArrayJson;
-        private _frameArrayJson;
-        private _timelineArrayJson;
-        private _intArrayBuffer;
-        private _floatArrayBuffer;
-        private _frameIntArrayBuffer;
-        private _frameFloatArrayBuffer;
-        private _frameArrayBuffer;
-        private _timelineArrayBuffer;
         protected static _getBoolean(rawData: any, key: string, defaultValue: boolean): boolean;
         /**
          * @private
@@ -3891,6 +3889,12 @@ declare namespace dragonBones {
         private readonly _cacheBones;
         private readonly _meshs;
         private readonly _slotChildActions;
+        private readonly _intArray;
+        private readonly _floatArray;
+        private readonly _frameIntArray;
+        private readonly _frameFloatArray;
+        private readonly _frameArray;
+        private readonly _timelineArray;
         /**
          * @private
          */
@@ -3962,11 +3966,11 @@ declare namespace dragonBones {
         /**
          * @private
          */
-        protected _parseFrame(rawData: any, frameStart: number, frameCount: number, frameArray: Array<number>): number;
+        protected _parseFrame(rawData: any, frameStart: number, frameCount: number): number;
         /**
          * @private
          */
-        protected _parseTweenFrame(rawData: any, frameStart: number, frameCount: number, frameArray: Array<number>): number;
+        protected _parseTweenFrame(rawData: any, frameStart: number, frameCount: number): number;
         /**
          * @private
          */
@@ -4006,7 +4010,7 @@ declare namespace dragonBones {
         /**
          * @private
          */
-        protected _parseWASMArray(): void;
+        protected _modifyArray(): void;
         /**
          * @inheritDoc
          */
@@ -4034,12 +4038,12 @@ declare namespace dragonBones {
     class BinaryDataParser extends ObjectDataParser {
         private _binary;
         private _binaryOffset;
-        private _intArray;
-        private _floatArray;
-        private _frameIntArray;
-        private _frameFloatArray;
-        private _frameArray;
-        private _timelineArray;
+        private _intArrayBuffer;
+        private _floatArrayBuffer;
+        private _frameIntArrayBuffer;
+        private _frameFloatArrayBuffer;
+        private _frameArrayBuffer;
+        private _timelineArrayBuffer;
         private _inRange(a, min, max);
         private _decodeUTF8(data);
         private _getUTF16Key(value);
